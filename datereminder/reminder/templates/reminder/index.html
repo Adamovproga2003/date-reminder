@@ -135,11 +135,20 @@
     #top > span:first-child {
         color: #0129B8;
     }
+
+    #panel {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
 </style>
 <body>
     <div class="wrapper">
         <div class="background">
-            <h1 id="headline">Birthday reminders</h1>
+            <div id="panel">
+                <h1 id="headline"><a href="{% url 'user' %}">{{username}}'s</a> Birthday reminders</h1>
+                <a href="{% url 'logout' %}" id="logout">Logout</a>
+            </div>
             <p id="paragraph">Save dates to wish your loved ones.</p>
             <a id="create" href="{% url 'create' %}">+ Add New</a>
             <span id="range-date">Today - {{ current_date|date:"j F Y" }}</span>

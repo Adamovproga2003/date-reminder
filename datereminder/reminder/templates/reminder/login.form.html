@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<style>
+    body {
+        padding: 0;
+        margin: 0;
+        font-family: 'Roboto', sans-serif;
+        width: 100vw;
+        height: 100vh;
+    }
+
+    .wrapper {
+        display: flex;
+        height: 100%;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin: auto;
+    }
+    .background {
+        padding: 10px 20px;
+        background-color: #51E9F3;
+        border-radius: 8px;
+        max-width: 280px;
+        width: 100%;
+    }
+    #headline-container {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    #headline-container h1 {
+        margin: 0;
+        font-size: 28px;
+        font-weight: 300;
+        color: blue;
+        margin-bottom: 4px;
+    }
+
+    #headline-container p {
+        color: #435D81;
+        margin: 0;
+        margin-bottom: 16px;
+        font-weight: 500;
+    }
+
+    .container label {
+        color: #435D81;
+    }
+
+    .container {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .container > div {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .container select {
+        background-color: #fff;
+        border: 2px solid #0129B8;
+        font-size: 16px;
+        padding: 10px;
+        border-radius: 8px;
+        font-family: 'Roboto', sans-serif;
+        font-weight: 800;
+        color: #0129B8;
+    }
+
+    .container input{
+        font-size: 16px;
+        border-radius: 8px;
+        background-color: #fff;
+        border: 2px solid #0129B8;
+        padding: 10px;
+        width: calc(100% - 24px);
+    }
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    form > input {
+        font-family: 'Roboto', sans-serif;
+        font-weight: 800;
+        font-size: 16px;
+        border-radius: 16px;
+        background-color: #0129B8;
+        border: 2px solid #fff;
+        color: #fff;
+        width: 100%;
+        padding: 10px;
+        cursor: pointer;
+    }
+
+    form > div:nth-child(2) > div, form > div:nth-child(3) > div {
+        width: 100%;
+    }
+
+    .errorlist {
+        list-style-type: none;
+        font-weight: 800;
+        color: red;
+    }
+</style>
+<div class="wrapper">
+    <div class="background">
+        <div id="headline-container">
+            <div>
+                <h1>Auth form</h1>
+            </div>
+        </div>
+        <form action="{% url 'auth' %}" method="post">
+        {% csrf_token %}
+            <div class="container">
+                <div>
+                    <label for="name">Enter your username</label>
+                    {{form.username}}
+                    <span>{{ form.username.errors }}</span>
+                </div>
+            </div>
+            <div class="container">
+                <div>
+                    <label for="relationship">Enter your password</label>
+                    {{form.password}}
+                    <span>{{ form.password.errors }}</span>
+                </div>
+            </div>
+        <input type="submit" value="Login">
+        </form>
+        </div>
+    </div>
+</body>
+</html>

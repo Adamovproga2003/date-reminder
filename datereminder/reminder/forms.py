@@ -21,6 +21,25 @@ monthDay = {
 }
 
 
+class AuthForm(forms.Form):
+    username = forms.CharField(max_length=200)
+    password = forms.CharField(max_length=200)
+
+    def __init__(self, *args, **kwargs):
+        super(AuthForm, self).__init__(*args, **kwargs)
+        self.fields['username'].widget = TextInput(attrs={
+            'type': 'text',
+            'id': 'username',
+            'class': '',
+            'name': 'username',
+            'placeholder': 'username'})
+        self.fields['password'].widget = TextInput(attrs={
+            'type': 'password',
+            'id': 'password',
+            'class': '',
+            'name': 'password',
+            'placeholder': 'password'})
+
 class DateForm(forms.Form):
     name = forms.CharField(max_length=200)
     relationship = forms.CharField(max_length=200)
