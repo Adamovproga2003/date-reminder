@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create</title>
+</head>
+<style>
+    body {
+        padding: 0;
+        margin: 0;
+        font-family: 'Roboto', sans-serif;
+        width: 100vw;
+        height: 100vh;
+    }
+
+    .wrapper {
+        display: flex;
+        height: 100%;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin: auto;
+    }
+    .background {
+        padding: 10px 20px;
+        background-color: #51E9F3;
+        border-radius: 8px;
+        max-width: 280px;
+        width: 100%;
+    }
+    #headline-container {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    #headline-container h1 {
+        margin: 0;
+        font-size: 28px;
+        font-weight: 300;
+        color: blue;
+        margin-bottom: 4px;
+    }
+
+    #headline-container p {
+        color: #435D81;
+        margin: 0;
+        margin-bottom: 16px;
+        font-weight: 500;
+    }
+
+    .container label {
+        color: #435D81;
+    }
+
+    .container {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .container > div {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .container select {
+        background-color: #fff;
+        border: 2px solid #0129B8;
+        font-size: 16px;
+        padding: 10px;
+        border-radius: 8px;
+        font-family: 'Roboto', sans-serif;
+        font-weight: 800;
+        color: #0129B8;
+    }
+
+    .container input{
+        font-size: 16px;
+        border-radius: 8px;
+        background-color: #fff;
+        border: 2px solid #0129B8;
+        padding: 10px;
+        width: calc(100% - 24px);
+    }
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    form > input {
+        font-family: 'Roboto', sans-serif;
+        font-weight: 800;
+        font-size: 16px;
+        border-radius: 16px;
+        background-color: #0129B8;
+        border: 2px solid #fff;
+        color: #fff;
+        width: 100%;
+        padding: 10px;
+        cursor: pointer;
+    }
+
+    form > div:nth-child(3) > div, form > div:nth-child(4) > div {
+        width: 100%;
+    }
+</style>
+<body>
+<div class="wrapper">
+    <div class="background">
+        <div id="headline-container">
+            <div>
+                <h1>Change Date</h1>
+                <p>Enter details of the special day.</p>
+            </div>
+            <div>
+                <a href="{% url 'index' %}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+                        <circle cx="16" cy="16" r="16" fill="white"/>
+                        <line x1="10.3433" y1="20.9496" x2="20.9499" y2="10.343" stroke="#309C54" stroke-linecap="round"/>
+                        <line x1="11.0504" y1="10.3433" x2="21.657" y2="20.9499" stroke="#309C54" stroke-linecap="round"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+        <form action="{% url 'add' %}" method="post">
+        {% csrf_token %}
+            <div class="container">
+                <div>
+                    <label for="day">Day</label>
+                    {{form.day}}
+                    <span>{{ form.day.errors }}</span>
+                </div>
+                <div>
+                    <label for="month">Month</label>
+                    {{form.month}}
+                    <span>{{ form.month.errors }}</span>
+                </div>
+                <div>
+                    <label for="year">Year</label>
+                    {{form.year}}
+                    <span>{{ form.year.errors }}</span>
+                </div>
+            </div>
+            <div class="container">
+                <div>
+                    <label for="name">Enter name of the Person</label>
+                    {{form.name}}
+                    <span>{{ form.name.errors }}</span>
+                </div>
+            </div>
+            <div class="container">
+                <div>
+                    <label for="relationship">Relationship</label>
+                    {{form.relationship}}
+                    <span>{{ form.relationship.errors }}</span>
+                </div>
+            </div>
+        <input type="submit" value="Change Date">
+        </form>
+        </div>
+    </div>
+</body>
+</html>

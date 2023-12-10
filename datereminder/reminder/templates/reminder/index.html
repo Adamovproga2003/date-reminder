@@ -1,0 +1,186 @@
+{% load custom_filters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Main</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+</head>
+<style>
+    body {
+        padding: 0;
+        margin: 0;
+        font-family: 'Roboto', sans-serif;
+        width: 100vw;
+        height: 100vh;
+    }
+
+    .wrapper {
+        display: flex;
+        height: 100%;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin: auto;
+    }
+
+    #headline {
+        font-size: 28px;
+        font-weight: 300;
+        color: blue;
+        margin: 0;
+        margin-bottom: 4px;
+    }
+
+    .background {
+        padding: 10px 20px;
+        background-color: #51E9F3;
+        border-radius: 8px;
+        max-width: 380px;
+        width: 100%;
+    }
+
+    #paragraph {
+        color: #435D81;
+        margin: 0;
+        margin-bottom: 16px;
+        font-weight: 500;
+    }
+
+    #create {
+        text-decoration: none;
+        color: #fff;
+        background-color: #0129B8;
+        padding: 10px 20px;
+        display: block;
+        width: fit-content;
+        border-radius: 32px;
+        border: 2px solid #fff;
+        margin-bottom: 8px;
+    }
+
+    #noDates {
+        text-align: center;
+        color: #435D81;
+        font-weight: 700;
+    }
+
+    #container {
+        margin: 10px 0;
+        padding: 10px 0px;
+        background-color: #fff;
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        height: 326px;
+        overflow-y: auto;
+    }
+
+    #person {
+        display: block;
+        text-decoration: none;
+        color: #435D81;
+    }
+
+    #range-date {
+        color: #435D81;
+    }
+
+    #bottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    #person-container {
+        margin: 0 10px;
+        background-color: #51E9F3;
+        border: 2px solid #0129B8;
+        padding: 10px;
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    #person-container > a {
+        text-decoration: none;
+        color: #435D81;
+        font-size: 24px;
+    }
+
+    #delete > a:last-child {
+         display: block;
+         text-decoration: none;
+         color: #435D81;
+         background-color: #fff;
+         border: 2px solid #0129B8;
+         border-radius: 16px;
+         padding: 5px 10px;
+    }
+
+    #top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    #top > span:nth-child(2) {
+        font-size: 16px;
+    }
+
+    #top > span:first-child {
+        color: #0129B8;
+    }
+</style>
+<body>
+    <div class="wrapper">
+        <div class="background">
+            <h1 id="headline">Birthday reminders</h1>
+            <p id="paragraph">Save dates to wish your loved ones.</p>
+            <a id="create" href="{% url 'create' %}">+ Add New</a>
+            <span id="range-date">Today - {{ current_date|date:"j F Y" }}</span>
+            <div id="container">
+                {% if latest_persons %}
+                    {% for person in latest_persons %}
+                        <div>
+                            <div id="person-container">
+                                <a href="{% url 'edit' person.id %}" id="person">
+                                    <div id="top">
+                                        <span>{{ person.name }}</span>
+                                        <span>{{ person.relationship }}</span>
+                                    </div>
+                                    <div id="bottom">
+                                        <div>
+                                            <span>
+                                               {% with last_digit=person.difference|get_last_digit %}
+                                                    {% if last_digit == '1' %}
+                                                        {{person.difference}}st
+                                                    {% elif last_digit == '2' %}
+                                                        {{person.difference}}nd
+                                                    {% elif last_digit == '3' %}
+                                                        {{person.difference}}rd
+                                                    {% else %}
+                                                        {{person.difference}}th
+                                                    {% endif %}
+                                                {% endwith %}
+                                                Birthday
+                                            </span>
+                                        </div>
+                                        <div id="delete"><a href="{% url 'delete' person.id %}">Delete</a></div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p id="noDates">No persons are available.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>
