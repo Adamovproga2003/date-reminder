@@ -101,8 +101,14 @@
         cursor: pointer;
     }
 
-    form > div:nth-child(3) > div, form > div:nth-child(4) > div {
+    form > div:nth-child(4) > div, form > div:nth-child(5) > div {
         width: 100%;
+    }
+
+    .errorlist {
+        list-style-type: none;
+        font-weight: 800;
+        color: red;
     }
 </style>
 <body>
@@ -129,18 +135,18 @@
                 <div>
                     <label for="day">Day</label>
                     {{form.day}}
-                    <span>{{ form.day.errors }}</span>
                 </div>
                 <div>
                     <label for="month">Month</label>
                     {{form.month}}
-                    <span>{{ form.month.errors }}</span>
                 </div>
                 <div>
                     <label for="year">Year</label>
                     {{form.year}}
-                    <span>{{ form.year.errors }}</span>
                 </div>
+            </div>
+            <div>
+                <span>{{ form.day.errors }}</span>
             </div>
             <div class="container">
                 <div>

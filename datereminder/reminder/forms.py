@@ -3,6 +3,8 @@ import datetime
 from django import forms
 from django.forms import TextInput, Select
 
+from .utils import check_leap
+
 monthDay = {
     "January": 31,
     "February": 29,
@@ -34,8 +36,9 @@ class DateForm(forms.Form):
                         ("October", "October"),
                         ("November", "November"),
                         ("December", "December")])
+    year = forms.ChoiceField(choices=[(str(year), str(year)) for year in range(1950, datetime.datetime.now().year + 1)])
     day = forms.ChoiceField(choices=[(str(day), str(day)) for day in range(1, 32)])
-    year = forms.ChoiceField(choices=[(f"{year}", f"{year}") for year in range(1950, datetime.datetime.now().year + 1)])
+
 
     def __init__(self, *args, **kwargs):
         super(DateForm, self).__init__(*args, **kwargs)
@@ -46,7 +49,7 @@ class DateForm(forms.Form):
         self.fields['year'].widget = Select(attrs={
                 'id': 'year',
                 'name': 'year'
-            }, choices=((f"{year}", f"{year}") for year in range(1950, datetime.datetime.now().year + 1)))
+            }, choices=((str(year), str(year)) for year in range(1950, datetime.datetime.now().year + 1)))
         self.fields['month'].widget = Select(attrs={
                 'id': 'month',
                 'name': 'month'
@@ -74,12 +77,29 @@ class DateForm(forms.Form):
                 'name': 'relationship',
                 'placeholder': 'e.g: Brother..'})
 
-    def clean(self):
-        cleaned_data = super(DateForm, self).clean()
-        name = cleaned_data.get('name')
-        relationship = cleaned_data.get('relationship')
-        month = cleaned_data.get('month')
-        day = cleaned_data.get('day')
-        year = cleaned_data.get('year')
-        if not name and not relationship and not month and not day and not year:
-            raise forms.ValidationError('You have to write something!')
+    def clean_day(self):
+        day = self.cleaned_data.get("day")
+        month = self.cleaned_data.get("month")
+        year = self.cleaned_data.get("year")
+
+        # Check if all required fields are present
+        if not (day and month and year):
+            # You can raise a ValidationError or just return the existing value
+            return day
+
+        # Now you can safely perform your validation logic
+        try:
+            year = int(year)
+        except ValueError:
+            raise forms.ValidationError("Invalid year")
+
+        if month in ["April", "June", "September", "November"] and int(day) > 30:
+            raise forms.ValidationError("Day must be less or equal 30")
+        elif month == 'February':
+            if check_leap(year):
+                if int(day) > 29:
+                    raise forms.ValidationError("Day must be less or equal 29")
+            elif int(day) > 28:
+                raise forms.ValidationError("Day must be less or equal 28")
+
+        return day

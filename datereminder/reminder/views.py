@@ -8,6 +8,7 @@ from django.urls import reverse
 
 from .forms import DateForm, monthDay
 from .models import Person
+from .utils import check_leap
 
 
 def index(request):
@@ -21,14 +22,25 @@ def index(request):
         birthday_month_day = person.birthDay.strftime("%m-%d")
 
         # Create date objects for this year's birthday
-        this_years_birthday = datetime.datetime.strptime(f"{datetime.datetime.now().year}-{birthday_month_day}", "%Y-%m-%d").date()
-        if today <= this_years_birthday <= seven_days_later:
-            latest_persons.append({
-                "id": person.id,
-                "name": person.name,
-                'relationship': person.relationship,
-                "difference": datetime.datetime.now().year - int(person.birthDay.strftime('%Y'))
-            })
+
+        current_year = datetime.datetime.now().year
+
+        this_years_birthday = None
+        if person.birthDay.month == 2 and not check_leap(current_year):
+            if person.birthDay.day == 29:
+                this_years_birthday = datetime.datetime.strptime(f"{datetime.datetime.now().year}-{person.birthDay.month}-{person.birthDay.day - 1}",
+                                                             "%Y-%m-%d").date()
+        else:
+            this_years_birthday = datetime.datetime.strptime(f"{datetime.datetime.now().year}-{birthday_month_day}",
+                                                             "%Y-%m-%d").date()
+        if this_years_birthday:
+            if today <= this_years_birthday <= seven_days_later:
+                latest_persons.append({
+                    "id": person.id,
+                    "name": person.name,
+                    'relationship': person.relationship,
+                    "difference": datetime.datetime.now().year - int(person.birthDay.strftime('%Y'))
+                })
 
     current_date = datetime.datetime.now() + datetime.timedelta(days=7)
     context = {"latest_persons": latest_persons, "current_date": current_date}
