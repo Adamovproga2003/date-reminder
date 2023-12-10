@@ -123,3 +123,4 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SESSION_COOKIE_AGE = 5*60
+AUTH_USER_MODEL = "reminder.User"

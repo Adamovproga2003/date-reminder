@@ -1,8 +1,10 @@
 import datetime
 
 from django import forms
+from django.contrib.auth import authenticate
 from django.forms import TextInput, Select
 
+from .models import User
 from .utils import check_leap
 
 monthDay = {
@@ -22,8 +24,9 @@ monthDay = {
 
 
 class AuthForm(forms.Form):
-    username = forms.CharField(max_length=200)
     password = forms.CharField(max_length=200)
+    username = forms.CharField(max_length=200)
+
 
     def __init__(self, *args, **kwargs):
         super(AuthForm, self).__init__(*args, **kwargs)
@@ -39,6 +42,21 @@ class AuthForm(forms.Form):
             'class': '',
             'name': 'password',
             'placeholder': 'password'})
+
+    def clean_username(self):
+        username = self.cleaned_data.get("username")
+        password = self.cleaned_data.get("password")
+        try:
+            User.objects.get(username=username)
+        except Exception as err:
+            return username
+
+        user = authenticate(username=username, password=password)
+        if user is None:
+            raise forms.ValidationError("Invalid username or password")
+        return username
+
+
 
 class DateForm(forms.Form):
     name = forms.CharField(max_length=200)

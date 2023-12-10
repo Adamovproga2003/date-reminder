@@ -42,14 +42,12 @@ def auth(request):
         if form.is_valid():
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
-
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
             else:
-                user = User(username=username, password=password)
+                user = User.objects.create_user(username=username, password=password)
                 user.save()
-
             request.session['user_id'] = user.id
             return redirect('index')
         else:
@@ -130,6 +128,9 @@ def delete(request, person_id):
 
 
 def add(request):
+    userId = request.session.get('user_id')
+    if not userId:
+        return HttpResponseRedirect(reverse("login"))
     if request.method == "POST":
         form = DateForm(request.POST)
         if form.is_valid():
@@ -139,7 +140,9 @@ def add(request):
             day = form.cleaned_data['day']
             year = form.cleaned_data['year']
             date = datetime.datetime.strptime(f'{year}-{month}-{day}', '%Y-%m-%d')
-            person = Person(name=name, relationship=relationship, birthDay=date)
+
+            user = User.objects.get(pk=userId)
+            person = Person(name=name, relationship=relationship, birthDay=date, user_id=user)
             person.save()
         else:
             return render(request, "reminder/add.form.html", {"form": form})

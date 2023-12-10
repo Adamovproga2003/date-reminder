@@ -18,8 +18,7 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
-    username = models.CharField(max_length=200)
-    password = models.CharField(max_length=200)
+    username = models.CharField(unique=True, max_length=200)
 
     objects = UserManager()
 

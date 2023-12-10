@@ -106,9 +106,11 @@
     }
 
     .errorlist {
+        padding: 0;
         list-style-type: none;
         font-weight: 800;
         color: red;
+        text-align: center;
     }
 </style>
 <div class="wrapper">
@@ -124,15 +126,16 @@
                 <div>
                     <label for="name">Enter your username</label>
                     {{form.username}}
-                    <span>{{ form.username.errors }}</span>
                 </div>
             </div>
             <div class="container">
                 <div>
                     <label for="relationship">Enter your password</label>
                     {{form.password}}
-                    <span>{{ form.password.errors }}</span>
                 </div>
+            </div>
+            <div>
+                <span>{{ form.username.errors }}</span>
             </div>
         <input type="submit" value="Login">
         </form>
