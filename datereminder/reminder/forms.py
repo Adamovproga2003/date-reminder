@@ -23,10 +23,45 @@ monthDay = {
 }
 
 
+class ChangeForm(forms.Form):
+    username = forms.CharField(max_length=200)
+    password = forms.CharField(max_length=200)
+    new_password = forms.CharField(max_length=200)
+
+    def __init__(self, *args, **kwargs):
+        super(ChangeForm, self).__init__(*args, **kwargs)
+        self.fields['username'].widget = TextInput(attrs={
+            'type': 'text',
+            'id': 'username',
+            'class': '',
+            'name': 'username',
+            'placeholder': 'username'})
+        self.fields['password'].widget = TextInput(attrs={
+            'type': 'password',
+            'id': 'password',
+            'class': '',
+            'name': 'password',
+            'placeholder': 'password'})
+        self.fields['new_password'].widget = TextInput(attrs={
+            'type': 'password',
+            'id': 'new_password',
+            'class': '',
+            'name': 'new_password',
+            'placeholder': 'New password'})
+
+    def clean_password(self):
+        password = self.cleaned_data.get("password")
+        if password:
+            username = self.cleaned_data.get("username")
+            user = authenticate(username=username, password=password)
+            if user is None:
+                raise forms.ValidationError("Invalid password")
+        return password
+
+
 class AuthForm(forms.Form):
     password = forms.CharField(max_length=200)
     username = forms.CharField(max_length=200)
-
 
     def __init__(self, *args, **kwargs):
         super(AuthForm, self).__init__(*args, **kwargs)

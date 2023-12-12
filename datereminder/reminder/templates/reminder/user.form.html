@@ -101,14 +101,16 @@
         cursor: pointer;
     }
 
-    form > div:nth-child(2) > div, form > div:nth-child(3) > div {
+    form > div:nth-child(2) > div, form > div:nth-child(3) > div, form > div:nth-child(4) > div {
         width: 100%;
     }
 
     .errorlist {
+        padding: 0;
         list-style-type: none;
         font-weight: 800;
         color: red;
+        text-align: center;
     }
 </style>
 <div class="wrapper">
@@ -124,14 +126,22 @@
                 <div>
                     <label for="name">Enter your username</label>
                     {{form.username}}
-
                 </div>
             </div>
             <div class="container">
                 <div>
-                    <label for="relationship">Enter your password</label>
+                    <label for="password">Enter your password</label>
                     {{form.password}}
                 </div>
+            </div>
+            <div class="container">
+                <div>
+                    <label for="new_password">Enter your password</label>
+                    {{form.new_password}}
+                </div>
+            </div>
+            <div>
+                <span>{{ form.password.errors }}</span>
             </div>
         <input type="submit" value="Change">
         </form>

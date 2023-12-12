@@ -7,7 +7,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 
-from .forms import DateForm, AuthForm, monthDay
+from .forms import DateForm, AuthForm, monthDay, ChangeForm
 from .models import Person, User
 from .utils import check_leap
 
@@ -24,17 +24,20 @@ def user(request):
 
     user = User.objects.get(pk=userId)
     if request.method == "POST":
-        form = AuthForm(request.POST)
+        form = ChangeForm(request.POST)
         if form.is_valid():
             username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
+            new_password = form.cleaned_data['new_password']
             user.username = username
-            user.password = password
+            user.set_password(new_password)
             user.save()
             return HttpResponseRedirect(reverse("index"))
-    else:
-        form = AuthForm({"username": user.username, "password": user.password})
+
         return render(request, "reminder/user.form.html", {"form": form})
+    else:
+        form = ChangeForm(initial={"username": user.username})
+        return render(request, "reminder/user.form.html", {"form": form})
+
 
 def auth(request):
     if request.method == "POST":
@@ -118,12 +121,39 @@ def edit(request, person_id):
     name = person.name
     relationship = person.relationship
     form = DateForm({"day": day, "year": year, "month": month, "name": name, "relationship": relationship})
-    return render(request, "reminder/change.form.html", {"form": form})
+    return render(request, "reminder/change.form.html", {"form": form, "person": person})
 
 
 def delete(request, person_id):
     person = Person.objects.get(pk=person_id)
     person.delete()
+    return HttpResponseRedirect(reverse("index"))
+
+
+def change(request, person_id):
+    userId = request.session.get('user_id')
+    if not userId:
+        return HttpResponseRedirect(reverse("login"))
+    if request.method == "POST":
+        form = DateForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            relationship = form.cleaned_data['relationship']
+            month = list(monthDay.keys()).index(form.cleaned_data['month']) + 1
+            day = form.cleaned_data['day']
+            year = form.cleaned_data['year']
+            date = datetime.datetime.strptime(f'{year}-{month}-{day}', '%Y-%m-%d')
+
+            user = User.objects.get(pk=userId)
+            person = Person.objects.get(pk=person_id)
+            person.name = name
+            person.relationship = relationship
+            person.birthDay = date
+            person.user_id = user
+
+            person.save()
+        else:
+            return render(request, "reminder/change.form.html", {"form": form, "person_id": person_id})
     return HttpResponseRedirect(reverse("index"))
 
 

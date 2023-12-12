@@ -123,7 +123,7 @@
                 </a>
             </div>
         </div>
-        <form action="{% url 'add' %}" method="post">
+        <form action="{% url 'change' person.id %}" method="post">
         {% csrf_token %}
             <div class="container">
                 <div>
